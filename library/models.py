@@ -1,5 +1,5 @@
 from django.db import models
-from decimal import Decimal
+from datetime import timedelta
 
 # Create your models here.
 
@@ -29,11 +29,11 @@ class User(models.Model):
         return self.name
     
 class Loan(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)  
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     loan_date = models.DateField(auto_now_add=True)
-    returned_date = models.DateField(null=True, blank=True)  
-    
+    returned_date = models.DateField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.user.name} - {self.book.title}"
     

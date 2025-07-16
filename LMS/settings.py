@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     
     'user',
     'library',
+    
+    
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

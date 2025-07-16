@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Book, User, Loan, Fine
+from django.core.paginator import Paginator
 # Register your models here.
 
 class BookAdmin(admin.ModelAdmin):
@@ -20,6 +21,7 @@ admin.site.register(User, UserAdmin)
 class LoanAdmin(admin.ModelAdmin):
     list_display = ['id','book','user', 'loan_date','returned_date']
     search_fields = ['book', 'user']
+    list_filter = ['user']
     list_editable = ['returned_date']
     
     
