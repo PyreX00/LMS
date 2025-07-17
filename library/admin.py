@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Book, User, Loan, Fine
-from django.core.paginator import Paginator
+
 # Register your models here.
 
 class BookAdmin(admin.ModelAdmin):
