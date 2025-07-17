@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import timedelta
+from datetime import timedelta,date
 
 # Create your models here.
 
@@ -27,16 +27,21 @@ class User(models.Model):
     
     def __str__(self):
         return self.name
-    
+
 class Loan(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    loan_date = models.DateField(auto_now_add=True)
+    loan_date = models.DateField(auto_now_add=True, editable=False)
     returned_date = models.DateField(null=True, blank=True)
+    due_date = models.DateField(editable=False)  
 
     def __str__(self):
         return f"{self.user.name} - {self.book.title}"
     
+    def save(self, *args, **kwargs):
+        self.due_date = self.loan_date + timedelta(days=15)
+        super().save(*args, **kwargs)
+
 class Fine(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE) 
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE)  
