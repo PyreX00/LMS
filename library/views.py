@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets,status
 from .models import Genre,Book,User,Loan,Fine
-from .serializer import GenreSerializer,BookSerializer, UserSerializer,LoanSerializer
+from .serializer import GenreSerializer,BookSerializer, UserSerializer,LoanSerializer, FineSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -47,5 +47,12 @@ class LoanViewSet(viewsets.ModelViewSet):
     filter_backends = (filter.DjangoFilterBackend,)
     filter_class = LoanFilter
     filterset_fields = ['user','due_date']
+    
+class FineViewSet(viewsets.ModelViewSet):
+    queryset = Fine.objects.all()
+    serializer_class = FineSerializer
+    
+    permission_classes = [permissions.IsAuthenticated]
+
 
     

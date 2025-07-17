@@ -1,5 +1,7 @@
 from django.db import models
-from datetime import timedelta,date
+from datetime import timedelta
+from django.utils import timezone
+from decimal import Decimal
 
 # Create your models here.
 
@@ -31,8 +33,8 @@ class User(models.Model):
 class Loan(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    loan_date = models.DateField(auto_now_add=True, editable=False)
-    returned_date = models.DateField(null=True, blank=True)
+    loan_date = models.DateField(default=timezone.now, editable=False)
+    # returned_date = models.DateField(null=True, blank=True)
     due_date = models.DateField(editable=False)  
 
     def __str__(self):
@@ -43,10 +45,24 @@ class Loan(models.Model):
         super().save(*args, **kwargs)
 
 class Fine(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
-    loan = models.ForeignKey(Loan, on_delete=models.CASCADE)  
-    fine_date = models.DateField(auto_now_add=True)  
-    fine_amount = models.DecimalField(max_digits=10, decimal_places=2)  
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
+    returned_date = models.DateField(auto_now_add=True)
+    fine_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+
+    PER_DAY_RATE = Decimal('1.00')  
+
     def __str__(self):
         return f"Fine for {self.user.name} - ${self.fine_amount}"
+
+    def save(self, *args, **kwargs):
+        loan_date = self.loan.loan_date
+        today = timezone.now().date()
+        days_overdue = (today - loan_date).days
+
+        if days_overdue > 15:
+            self.fine_amount = days_overdue * self.PER_DAY_RATE
+        else:
+            self.fine_amount = Decimal('0.00')
+
+        super().save(*args, **kwargs)

@@ -19,10 +19,15 @@ admin.site.register(User, UserAdmin)
 
 
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ['id','book','user', 'loan_date','returned_date']
+    list_display = ['id','book','user', 'loan_date','due_date',]
     search_fields = ['book', 'user']
-    list_filter = ['user']
-    list_editable = ['returned_date']
+    list_filter = ['user','due_date']
+    # list_editable = ['returned_date']
     
     
 admin.site.register(Loan, LoanAdmin)
+
+class FineAdmin(admin.ModelAdmin):
+    list_display = ['id','user','loan','returned_date','fine_amount']
+
+admin.site.register(Fine,FineAdmin)
