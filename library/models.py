@@ -56,11 +56,11 @@ class Fine(models.Model):
         return f"Fine for {self.user.name} - ${self.fine_amount}"
 
     def save(self, *args, **kwargs):
-        loan_date = self.loan.loan_date
+        due_date = self.loan.due_date  # Use due_date instead of loan_date
         today = timezone.now().date()
-        days_overdue = (today - loan_date).days
+        days_overdue = (today - due_date).days
 
-        if days_overdue > 15:
+        if days_overdue > 0:  # Any days past due date
             self.fine_amount = days_overdue * self.PER_DAY_RATE
         else:
             self.fine_amount = Decimal('0.00')

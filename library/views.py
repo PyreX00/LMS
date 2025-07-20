@@ -5,7 +5,7 @@ from .serializer import GenreSerializer,BookSerializer, UserSerializer,LoanSeria
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import permissions
-from .permission import IsAuthenticatedOrReadOnly
+from .permission import IsAuthenticatedOrReadOnly,IsSuperUserOrReadOnly
 from rest_framework import filters
 from .filters import BookFilter, LoanFilter
 from django_filters import rest_framework as filter
@@ -14,6 +14,9 @@ from django_filters import rest_framework as filter
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    
+    
+    premission_classes = [IsAuthenticatedOrReadOnly]
     
     def delete(self, request, pk):
         genre = Genre.objects.get(pk=pk)
@@ -37,13 +40,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
     
 class LoanViewSet(viewsets.ModelViewSet):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
     
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
     filter_backends = (filter.DjangoFilterBackend,)
     filter_class = LoanFilter
     filterset_fields = ['user','due_date']
