@@ -33,8 +33,8 @@ class User(models.Model):
 class Loan(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    loan_date = models.DateField(default=timezone.now, editable=False)
-    # returned_date = models.DateField(null=True, blank=True)
+    loan_date = models.DateField(default=timezone.now().date, editable=False)
+    
     due_date = models.DateField(editable=False)  
 
     def __str__(self):

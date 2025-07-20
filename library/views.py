@@ -5,7 +5,7 @@ from .serializer import GenreSerializer,BookSerializer, UserSerializer,LoanSeria
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import permissions
-from .permission import IsAuthenticatedOrReadOnly,IsSuperUserOrReadOnly
+from .permission import OnlySuperUserPost, OnlySuperUserAccess
 from rest_framework import filters
 from .filters import BookFilter, LoanFilter
 from django_filters import rest_framework as filter
@@ -15,8 +15,8 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     
-    
-    premission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [OnlySuperUserPost]
+
     
     def delete(self, request, pk):
         genre = Genre.objects.get(pk=pk)
@@ -30,7 +30,7 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [OnlySuperUserPost]
     
     filter_backends = (filters.SearchFilter,filter.DjangoFilterBackend,)
     filter_class = BookFilter
@@ -40,13 +40,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
-    permission_classes = [IsSuperUserOrReadOnly]
+    permission_classes = [OnlySuperUserAccess]
     
 class LoanViewSet(viewsets.ModelViewSet):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
     
-    permission_classes = [IsSuperUserOrReadOnly]
+    permission_classes = [OnlySuperUserAccess]
     filter_backends = (filter.DjangoFilterBackend,)
     filter_class = LoanFilter
     filterset_fields = ['user','due_date']
@@ -55,7 +55,7 @@ class FineViewSet(viewsets.ModelViewSet):
     queryset = Fine.objects.all()
     serializer_class = FineSerializer
     
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [OnlySuperUserAccess]
 
 
     

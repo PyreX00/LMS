@@ -8,6 +8,15 @@ class IsAuthenticatedOrReadOnly(BasePermission):
         # return super().has_permission(request, view)
         
 
-class IsSuperUserOrReadOnly(BasePermission):
+
+class OnlySuperUserPost(BasePermission):
+
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.is_superuser
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_superuser
+
+class OnlySuperUserAccess(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_superuser
